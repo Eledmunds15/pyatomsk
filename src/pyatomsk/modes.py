@@ -12,7 +12,7 @@ def create(
     output_file: str | Path = None,
     formats: list[str] = None
 ):
-    """Create a standard lattice structure (not nanotube)."""
+    """Create a standard lattice structure"""
     if species is None or len(species) == 0:
         raise ValueError("At least one atomic species must be specified.")
 

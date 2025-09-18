@@ -48,7 +48,7 @@ def test_create_nanotube(tmp_path):
     """
     Test the create_nanotube() function for a simple carbon nanotube.
     """
-    output_file = tmp_path / "nanotube.xsf"
+    output_file = tmp_path / "nanotube.cfg"
 
     pyatomsk.create_nanotube(
         a0=2.5,
