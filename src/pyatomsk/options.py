@@ -2,6 +2,58 @@ from pathlib import Path
 from . import utils
 from .core import run
 
+def add_atom(
+    input_file: str | Path,
+    species: str,
+    position: str | float | int,
+    output_file: str | Path = None
+):
+    """
+    Add one or more atoms to a system using Atomsk's -add-atom option.
+
+    Parameters:
+        input_file: Path to the input structure file
+        species: The element species of the atom(s) to add
+        position: A tuple of (x, y, z) coordinates, an integer index, or a string
+                  for 'random'
+        output_file: Path to the output file
+
+    Returns:
+        Path: Path to the output file
+    """
+    input_path = Path(input_file)
+
+    if output_file is None:
+        output_path = input_path.with_name(input_path.stem + "_add" + input_path.suffix)
+    else:
+        output_path = Path(output_file)
+
+    utils.checkExistingFile(output_path)
+    utils.checkFormatsMatch(input_path, output_path)
+
+    cmd = [str(input_path), '-add-atom', species]
+
+    if isinstance(position, tuple) and len(position) == 3:
+        # Assumes absolute coordinates
+        cmd.extend(['at', str(position[0]), str(position[1]), str(position[2])])
+    elif isinstance(position, int):
+        # Assumes adding near a specific atom index
+        cmd.extend(['near', str(position)])
+    elif isinstance(position, str) and position.startswith('random'):
+        # Assumes random position for N atoms
+        parts = position.split()
+        if len(parts) == 2 and parts[0] == 'random' and parts[1].isdigit():
+            cmd.extend(parts)
+        else:
+            raise ValueError("Invalid 'random' position format. Use 'random <N>' where <N> is an integer.")
+    else:
+        raise ValueError("Invalid position format. Use a tuple (x, y, z), an integer index, or a string 'random <N>'.")
+
+    cmd.append(str(output_path))
+    run(cmd)
+
+    return output_path
+
 def duplicate(
     input_file: str | Path,
     Nx: int = 1,
