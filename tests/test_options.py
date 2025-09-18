@@ -1,6 +1,8 @@
 import pyatomsk
 from pathlib import Path
 
+# TO DO: Add tests for add_atom, check add_atom.
+
 # ---------------------------
 # Test duplicate function
 # ---------------------------
